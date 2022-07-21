@@ -1,0 +1,54 @@
+- name: Logstash upgradation(7.x)
+  hosts: logstash
+  become: true
+
+  vars:
+    
+    kibana_version: 7.17.5
+    kibana_destination: /opt
+    application: kibana
+    
+
+
+  tasks:
+
+    - name: Download Logstash RPM package {{ kibana_version }}
+      ansible.builtin.get_url:
+        url: https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}-x86_64.rpm
+        dest: {{ logstash_destination }}
+        #checksum: "sha512:https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}-x86_64.rpm.sha512"
+    
+    - name: Stop service {{ application}}
+      ansible.builtin.service:
+        name: {{ application }}
+        state: stopped
+
+    - name: Install {{ application }}
+      ansible.builtin.yum:
+        name: /{{ kibana_destination }}/kibana-{{ kibana_version }}-x86_64.rpm
+        state: present
+
+        
+    - name: Just force systemd to reload
+      ansible.builtin.systemd:
+        daemon_reload: yes
+        
+    - name: Enable service {{ application }} and ensure it is not masked
+      ansible.builtin.systemd:
+        name: {{ application }}
+        enabled: yes
+        masked: no
+
+
+    - name: Start service {{ application}}, if not started
+      ansible.builtin.service:
+        name: {{ application }}
+        state: started
+
+    - name: checking service status
+      ansible.builtin.command: systemctl status "{{ application }}"
+        register: result
+
+    - name: showing kibana status report
+      ansible.builtin.debug:
+        var: result
