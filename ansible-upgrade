@@ -12,7 +12,7 @@
 
   tasks:
 
-    - name: Download Logstash RPM package {{ kibana_version }}
+    - name: Download Kibana RPM package {{ kibana_version }}
       ansible.builtin.get_url:
         url: https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}-x86_64.rpm
         dest: {{ logstash_destination }}
@@ -23,7 +23,7 @@
         name: {{ application }}
         state: stopped
 
-    - name: Install {{ application }}
+    - name: upgrade {{ application }}
       ansible.builtin.yum:
         name: /{{ kibana_destination }}/kibana-{{ kibana_version }}-x86_64.rpm
         state: present
@@ -45,10 +45,10 @@
         name: {{ application }}
         state: started
 
-    - name: checking service status
+    - name: checking {{ application }}service status
       ansible.builtin.command: systemctl status "{{ application }}"
         register: result
 
-    - name: showing kibana status report
+    - name: showing {{ application }} status report
       ansible.builtin.debug:
         var: result
