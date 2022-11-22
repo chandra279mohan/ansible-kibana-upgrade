@@ -7,10 +7,26 @@
     kibana_version: 7.17.5
     kibana_destination: /opt
     application: kibana
+    kibana_home: /usr/share/kibana
+    kibana_config: /etc/kibana
+    kibana_home_backup: /opt/kibana_home_backup_7.16.2
+    kibana_config_backup: /opt/kibana_config_backup_7.16.2
     
 
 
   tasks:
+  
+    - name: Take backup of kibana home directory
+      ansible.builtin.copy:
+        src: "{{kibana_home}}"
+        dest: "{{kibana_home_backup}}"
+      delegate_to: localhost  
+      
+    - name: Take backup of kibana config directory
+      ansible.builtin.copy:
+        src: "{{kibana_config}}"
+        dest: "{{kibana_config_backup}}"
+      delegate_to: localhost
 
     - name: Download Kibana RPM package {{ kibana_version }}
       ansible.builtin.get_url:
