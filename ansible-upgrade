@@ -20,16 +20,10 @@
   tasks:
   
     - name: Take backup of kibana home directory
-      ansible.builtin.copy:
-        src: "{{kibana_home}}"
-        dest: "{{kibana_home_backup}}"
-      delegate_to: localhost  
+      ansible.builtin.command: cp -rp "{{kibana_home}}"  "{{kibana_home_backup}}"
       
     - name: Take backup of kibana config directory
-      ansible.builtin.copy:
-        src: "{{kibana_config}}"
-        dest: "{{kibana_config_backup}}"
-      delegate_to: localhost
+      ansible.builtin.command: cp -rp "{{kibana_config}}" "{{kibana_config_backup}}"
 
     - name: Download Kibana RPM package {{ kibana_version }}
       ansible.builtin.get_url:
@@ -46,7 +40,6 @@
       ansible.builtin.yum:
         name: /{{ kibana_destination }}/kibana-{{ kibana_version }}-x86_64.rpm
         state: present
-
         
     - name: Just force systemd to reload
       ansible.builtin.systemd:
@@ -57,7 +50,6 @@
         name: {{ application }}
         enabled: yes
         masked: no
-
 
     - name: Start service {{ application}}, if not started
       ansible.builtin.service:
