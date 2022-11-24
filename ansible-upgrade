@@ -56,10 +56,19 @@
         name: {{ application }}
         state: started
 
-    - name: checking {{ application }}service status
-      ansible.builtin.command: systemctl status "{{ application }}"
+    - name: checking kibana service status
+      ansible.builtin.command: systemctl status kibana
       register: result
+      until: "'active (running)' in result.stdout"
+      retries: 10
+      delay: 15
 
     - name: showing {{ application }} status report
       ansible.builtin.debug:
-        var: result
+        var: result 
+        
+    - name: Pause for 1 minute
+      ansible.builtin.pause:
+        minutes: 1
+
+    
