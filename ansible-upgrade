@@ -37,9 +37,7 @@
         state: stopped
 
     - name: upgrade {{ application }}
-      ansible.builtin.yum:
-        name: /opt/kibana-{{ kibana_version }}-x86_64.rpm
-        state: present
+      ansible.builtin.command: rpm -Uvh /opt/kibana-{{ kibana_version }}-x86_64.rpm
         
     - name: Just force systemd to reload
       ansible.builtin.systemd:
