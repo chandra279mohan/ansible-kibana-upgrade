@@ -65,7 +65,7 @@
 
     - name: showing {{ application }} status report
       ansible.builtin.debug:
-        var: result 
+        var: result.stdout 
         
     - name: Pause for 1 minute
       ansible.builtin.pause:
