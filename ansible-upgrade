@@ -28,7 +28,7 @@
     - name: Download Kibana RPM package {{ kibana_version }}
       ansible.builtin.get_url:
         url: https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}-x86_64.rpm
-        dest: {{ logstash_destination }}
+        dest: /opt
         #checksum: "sha512:https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}-x86_64.rpm.sha512"
     
     - name: Stop service {{ application}}
